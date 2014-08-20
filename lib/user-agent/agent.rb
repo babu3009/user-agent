@@ -116,6 +116,8 @@ module UserAgent
           :'Windows 2000'
         when /windows phone os ([^;]+);/i;
           :"Windows Phone OS #{$1}"
+        when /windows phone ([^;]+);/i;
+          :"Windows Phone #{$1}"
         when /os x (\d+)[._](\d+)/i;
           :"OS X #{$1}.#{$2}"
         when /android ([^;]+);/i;

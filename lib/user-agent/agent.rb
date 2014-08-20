@@ -28,6 +28,10 @@ module UserAgent
       ParsedUserAgent.os_for_user_agent string
     end
 
+    def system_type
+      ParsedUserAgent.system_type_for_user_agent string
+    end
+
     def platform
       ParsedUserAgent.platform_for_user_agent string
     end
@@ -54,105 +58,201 @@ module UserAgent
 
     def self.version_for_user_agent string
       case name = name_for_user_agent(string)
-      when :ChromeFrame ; $1 if string =~ /chromeframe\/([\d\s\.\-]+)/i
-      when :Chrome ; $1 if string =~ /chrome\/([\d\w\.\-]+)/i
-      when :Safari ; $1 if string =~ /version\/([\d\w\.\-]+)/i
-      when :PS3    ; $1 if string =~ /([\d\w\.\-]+)\)\s*$/i
-      when :PSP    ; $1 if string =~ /([\d\w\.\-]+)\)?\s*$/i
-      when :"IE Mobile"; $1 if string =~ /iemobile\/([\d\.]+)/i
-      else           $1 if string =~ /#{name}[\/ ]([\d\w\.\-]+)/i || string =~ /rv\:([\d\.]+)/i
+        when :ChromeFrame;
+          $1 if string =~ /chromeframe\/([\d\s\.\-]+)/i
+        when :Chrome;
+          $1 if string =~ /chrome\/([\d\w\.\-]+)/i
+        when :Safari;
+          $1 if string =~ /version\/([\d\w\.\-]+)/i
+        when :PS3;
+          $1 if string =~ /([\d\w\.\-]+)\)\s*$/i
+        when :PSP;
+          $1 if string =~ /([\d\w\.\-]+)\)?\s*$/i
+        when :"IE Mobile";
+          $1 if string =~ /iemobile\/([\d\.]+)/i
+        else
+          $1 if string =~ /#{name}[\/ ]([\d\w\.\-]+)/i || string =~ /rv\:([\d\.]+)/i
       end
     end
 
     def self.engine_for_user_agent string
       case string
-      when /webkit/i    ; :webkit
-      when /khtml/i     ; :khtml
-      when /konqueror/i ; :konqueror
-      when /chrome/i    ; :chrome
-      when /presto/i    ; :presto
-      when /trident.*like gecko/i; :msie
-      when /gecko/i     ; :gecko
-      when /msie/i      ; :msie
-      else                :Unknown
+        when /webkit/i;
+          :webkit
+        when /khtml/i;
+          :khtml
+        when /konqueror/i;
+          :konqueror
+        when /chrome/i;
+          :chrome
+        when /presto/i;
+          :presto
+        when /trident.*like gecko/i;
+          :msie
+        when /gecko/i;
+          :gecko
+        when /msie/i;
+          :msie
+        else
+          :Unknown
       end
     end
 
     def self.os_for_user_agent string
       case string
-      when /windows nt 6\.0/i             ; :'Windows Vista'
-      when /windows nt 6\.2/i             ; :'Windows 8'
-      when /windows nt 6\.1/i             ; :'Windows 7'
-      when /windows nt 5\.2/i             ; :'Windows 2003'
-      when /windows nt 5\.1/i             ; :'Windows XP'
-      when /windows nt 5\.0/i             ; :'Windows 2000'
-      when /windows phone os ([^;]+);/i   ; :"Windows Phone OS #{$1}"
-      when /os x (\d+)[._](\d+)/i         ; :"OS X #{$1}.#{$2}"
-      when /android ([^;]+);/i            ; :"Android #{$1}"
-      when /linux/i                       ; :Linux
-      when /wii/i                         ; :Wii
-      when /playstation 3/i               ; :Playstation
-      when /playstation portable/i        ; :Playstation
-      when /ipad.*os (\d+)[._](\d+)[._](\d+)/i; :"iOS #{$1}.#{$2}.#{$3}"
-      when /\(ipad.*os (\d+)[._](\d+)/i   ; :"iOS #{$1}.#{$2}"
-      when /iphone.*os (\d+)[._](\d+)[._](\d+)/i; :"iOS #{$1}.#{$2}.#{$3}"
-      when /\iphone.*os (\d+)[._](\d+)/i ; :"iOS #{$1}.#{$2}"
-      when /webos\/([^;]+);/i             ; :"webOS #{$1}"
-      when /os x/i                        ; :"OS X"
-      when /cros i\d{3} ([^\)]+)\)/i      ; :"ChromeOS #{$1}"
-      when /rim tablet os ([^;]+);/i      ; :"RIM Tablet OS #{$1}"
-      when /blackberry(\d+)\/([^\s]+)\s/i      ; :"RIM OS #{$2}"
-      when /blackberry ([^;]+);/i         ; :"RIM OS"
-      else                                ; :Unknown
+        when /windows nt 6\.0/i;
+          :'Windows Vista'
+        when /windows nt 6\.3/i;
+          :'Windows 8.1'
+        when /windows nt 6\.2/i;
+          :'Windows 8'
+        when /windows nt 6\.1/i;
+          :'Windows 7'
+        when /windows nt 5\.2/i;
+          :'Windows 2003'
+        when /windows nt 5\.1/i;
+          :'Windows XP'
+        when /windows nt 5\.0/i;
+          :'Windows 2000'
+        when /windows phone os ([^;]+);/i;
+          :"Windows Phone OS #{$1}"
+        when /os x (\d+)[._](\d+)/i;
+          :"OS X #{$1}.#{$2}"
+        when /android ([^;]+);/i;
+          :"Android #{$1}"
+        when /linux/i;
+          :Linux
+        when /wii/i;
+          :Wii
+        when /playstation 3/i;
+          :Playstation
+        when /playstation portable/i;
+          :Playstation
+        when /ipad.*os (\d+)[._](\d+)[._](\d+)/i;
+          :"iOS #{$1}.#{$2}.#{$3}"
+        when /\(ipad.*os (\d+)[._](\d+)/i;
+          :"iOS #{$1}.#{$2}"
+        when /iphone.*os (\d+)[._](\d+)[._](\d+)/i;
+          :"iOS #{$1}.#{$2}.#{$3}"
+        when /iphone.*os (\d+)[._](\d+)/i;
+          :"iOS #{$1}.#{$2}"
+        when /webos\/([^;]+);/i;
+          :"webOS #{$1}"
+        when /os x/i;
+          :"OS X"
+        when /cros i\d{3} ([^\)]+)\)/i;
+          :"ChromeOS #{$1}"
+        when /rim tablet os ([^;]+);/i;
+          :"RIM Tablet OS #{$1}"
+        when /blackberry(\d+)\/([^\s]+)\s/i;
+          :"RIM OS #{$2}"
+        when /blackberry ([^;]+);/i;
+          :"RIM OS"
+        else
+          ; :Unknown
+      end
+    end
+
+    #x86_64
+    def self.system_type_for_user_agent string
+      case string
+        when /wow64/i;
+          :"64-bit"
+        when /win64/i;
+          :"64-bit"
+        when /x64/i;
+          :"64-bit"
+        when /x86_64/i;
+          :"64-bit"
+        when /ARM/i;
+          :RT_ARM
+        when /arm/i;
+          :RT_ARM
+        else
+          :"32-bit"
       end
     end
 
     def self.platform_for_user_agent string
       case string
-      when /windows phone/i; :"Windows Phone"
-      when /windows/i     ; :Windows
-      when /macintosh/i   ; :Macintosh
-      when /android/i     ; :Android
-      when /linux/i       ; :Linux
-      when /wii/i         ; :Wii
-      when /playstation/i ; :Playstation
-      when /ipod/i        ; :iPod
-      when /ipad/i        ; :iPad
-      when /iphone/i      ; :iPhone
-      when /blackberry/i  ; :BlackBerry
-      when /playbook/i    ; :PlayBook
-      when /webos/i       ; :webOS
-      when /cros/i        ; :ChromeOS
-      else                  :Unknown
+        when /windows phone/i;
+          :"Windows Phone"
+        when /windows/i;
+          :Windows
+        when /macintosh/i;
+          :Macintosh
+        when /android/i;
+          :Android
+        when /linux/i;
+          :Linux
+        when /wii/i;
+          :Wii
+        when /playstation/i;
+          :Playstation
+        when /ipod/i;
+          :iPod
+        when /ipad/i;
+          :iPad
+        when /iphone/i;
+          :iPhone
+        when /blackberry/i;
+          :BlackBerry
+        when /playbook/i;
+          :PlayBook
+        when /webos/i;
+          :webOS
+        when /cros/i;
+          :ChromeOS
+        else
+          :Unknown
       end
     end
 
     def self.name_for_user_agent string
       case string
-      when /konqueror/i            ; :Konqueror
-      when /chromeframe/i          ; :ChromeFrame
-      when /chrome/i               ; :Chrome
-      when /mobile safari/i        ; :"Mobile Safari"
-      when /safari/i               ; :Safari
-      when /iemobile/i             ; :"IE Mobile"
-      when /msie/i                 ; :IE
-      when /trident.*rv\:11/i      ; :IE         # "Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko"
-      when /opera/i                ; :Opera
-      when /playstation 3/i        ; :PS3
-      when /playstation portable/i ; :PSP
-      when /firefox/i              ; :Firefox
-      when /ipad|iphone|ipod/i     ; :"Mobile Safari"
-      when /blackberry/i           ; :"BlackBerrry"
-      else                         ; :Unknown
+        when /konqueror/i;
+          :Konqueror
+        when /chromeframe/i;
+          :ChromeFrame
+        when /chrome/i;
+          :Chrome
+        when /mobile safari/i;
+          :"Mobile Safari"
+        when /safari/i;
+          :Safari
+        when /iemobile/i;
+          :"IE Mobile"
+        when /msie/i;
+          :IE
+        when /trident.*rv\:11/i;
+          :IE # "Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko"
+        when /opera/i;
+          :Opera
+        when /playstation 3/i;
+          :PS3
+        when /playstation portable/i;
+          :PSP
+        when /firefox/i;
+          :Firefox
+        when /ipad|iphone|ipod/i;
+          :"Mobile Safari"
+        when /blackberry/i;
+          :"BlackBerrry"
+        else
+          ; :Unknown
       end
     end
 
     def self.device_for_user_agent string
       case platform = platform_for_user_agent(string)
-      when :Windows, :Macintosh, :Linux, :ChromeOS ; :Desktop
-      when :iPod, :iPad, :iPhone, :BlackBerry, :PlayBook, :Android, :webOS, :"Windows Phone" ; :Mobile
-      when :Wii, :Playstation ; :"Game Console"
-      else ; :Unknown
+        when :Windows, :Macintosh, :Linux, :ChromeOS;
+          :Desktop
+        when :iPod, :iPad, :iPhone, :BlackBerry, :PlayBook, :Android, :webOS, :"Windows Phone";
+          :Mobile
+        when :Wii, :Playstation;
+          :"Game Console"
+        else
+          ; :Unknown
       end
     end
 

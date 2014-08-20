@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
 
   s.name = 'podman-user-agent'
   s.version = UserAgent::VERSION
-  s.authors = ['Adam Podolnick']
+  s.authors = ['Adam Podolnick / babu3009']
   s.email = 'podman@gmail.com'
   s.homepage = 'http://github.com/podman/user-agent'
   s.summary = 'User agent parser'
